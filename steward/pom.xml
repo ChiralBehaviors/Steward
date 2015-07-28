@@ -3,13 +3,12 @@
 >
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.chiralbehaviors.northwind</groupId>
-        <artifactId>northwind.app</artifactId>
+        <groupId>com.chiralbehaviors.steward</groupId>
+        <artifactId>steward.app</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>northwind</artifactId>
-    <name>Northwind</name>
-    <description>Demonstration of Ultrastructure implementation of ye olde Northwind demo application</description>
+    <artifactId>steward</artifactId>
+    <name>Steward</name>
 
     <dependencies>
         <dependency>

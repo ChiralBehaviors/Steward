@@ -2,12 +2,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.chiralbehaviors.northwind</groupId>
-    <artifactId>northwind.app</artifactId>
+    <groupId>com.chiralbehaviors.steward</groupId>
+    <artifactId>steward.app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Northwind Demonstration</name>
-    <description>A demonstration of Ultrastructure, using the Northwind demo application</description>
+    <name>Steward</name>
+    <description>Steward, built on ultrastructure</description>
 
     <licenses>
         <license>
@@ -22,19 +22,20 @@
             <email>hal.hildebrand@me.com</email>
             <organization>Chiral Behaviors</organization>
         </developer>
+        <developer>
+            <name>Halloran Parry</name>
+            <email>halloran.parry@gmail.com</email>
+            <organization>Chiral Behaviors</organization>
+        </developer>
     </developers>
 
-    <scm>
-        <connection>git://github.com/ChiralBehaviors/Northwind.git</connection>
-        <url>https://github.com/ChiralBehaviors/Northwind</url>
-    </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <dba.db.database>postgres</dba.db.database>
         <dba.db.server>127.0.0.1</dba.db.server>
-        <dba.db.port>5432</dba.db.port>
+        <dba.db.port>5433</dba.db.port>
         <dba.db.login>postgres</dba.db.login>
         <dba.db.password>postgres</dba.db.password>
 
@@ -53,8 +54,8 @@
 
     <modules>
         <module>schema-loading</module>
-        <module>northwind</module>
-        <module>northwind-service</module>
+        <module>steward</module>
+        <module>steward-service</module>
     </modules>
 
     <repositories>
@@ -90,12 +91,12 @@
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>northwind</artifactId>
+                <artifactId>steward</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>northwind-service</artifactId>
+                <artifactId>steward-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
