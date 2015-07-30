@@ -44,9 +44,9 @@
                         </goals>
                         <configuration>
                             <generator>
-                                <resource>${basedir}/src/main/resources/northwind.wsp</resource>
+                                <resource>${basedir}/src/main/resources/steward-workspace.wsp</resource>
                                 <outputDirectory>${project.build.directory}/generated-sources/phantasm</outputDirectory>
-                                <packageName>com.chiralbehaviors.northwind</packageName>
+                                <packageName>com.chiralbehaviors.steward</packageName>
                                 <appendTypeToPackage>true</appendTypeToPackage>
                             </generator>
                         </configuration>
