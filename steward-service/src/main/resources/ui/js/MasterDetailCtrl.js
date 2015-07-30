@@ -1,6 +1,6 @@
 ﻿var myApp = angular.module('myApp', [ "phantasm" ]);
 
-var northwindUri = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/northwind/v1";
+var stewardUri = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward/v1";
 
 // Force AngularJS to call our JSON Web Service with a 'GET' rather than an
 // 'OPTION'
@@ -10,19 +10,19 @@ myApp.config([ '$httpProvider', function($httpProvider) {
 	delete $httpProvider.defaults.headers.common['X-Requested-With'];
 } ]);
 
-myApp.service("Customers", [
+myApp.service("Journeys", [
 		'WorkspacePhantasm',
 		'PhantasmRelative',
 		function(WorkspacePhantasm, PhantasmRelative) {
 			this.instances = function() {
-				return WorkspacePhantasm.facetInstances(northwindUri, "Agency",
-						"kernel|IsA", "Customer");
+				return WorkspacePhantasm.facetInstances(stewardUri, "Interval",
+						"kernel|IsA", "Journey");
 			};
 
 			this.instance = function(customer) {
 				var instance = PhantasmRelative.instance(customer);
-				return WorkspacePhantasm.facetInstance(northwindUri, "Agency",
-						"kernel|IsA", "Customer", instance);
+				return WorkspacePhantasm.facetInstance(stewardUri, "Interval",
+						"kernel|IsA", "Journey", instance);
 			};
 		} ]);
 
@@ -73,13 +73,13 @@ myApp.filter('orderTotal', function() {
 	};
 });
 
-myApp.controller('MasterDetailCtrl', [ '$scope', 'Customers',
-		function($scope, Customers) {
+myApp.controller('MasterDetailCtrl', [ '$scope', 'Journeys',
+		function($scope, Journeys) {
 			$scope.listOfCustomers = null;
 			$scope.selectedCustomer = null;
 
-			var selection = [ ";a=Customer Name" ];
-			Customers.instances().get({
+			var selection = [ ";a=Journey Name" ];
+			Journeys.instances().get({
 				select : selection
 			}).then(function(data) {
 				$scope.listOfCustomers = data.instances;
@@ -99,7 +99,7 @@ myApp.controller('MasterDetailCtrl', [ '$scope', 'Customers',
 				$scope.listOfOrders = null;
 
 				var selection = [ "orders;a=name;a=Required Date;a=Order Date;a=Ship Date/itemDetails;a=unit price;a=quantity;a=discount;a=tax rate/product/name" ];
-				Customers.instance($scope.selectedCustomer).get({
+				Journeys.instance($scope.selectedCustomer).get({
 					select : selection
 				}).then(function(data) {
 					$scope.listOfOrders = data.orders;

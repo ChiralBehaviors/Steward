@@ -1,29 +1,29 @@
-var northwindControllers = angular.module('northwindControllers',
+var stewardControllers = angular.module('stewardControllers',
 		[ 'jsonFormatter' ]);
 
-northwindControllers.controller('CustomersControl', [
+stewardControllers.controller('JourneysControl', [
 		'$scope',
-		'Customers',
+		'Journeys',
 		'PhantasmRelative',
-		function($scope, Customers, PhantasmRelative) {
-			Customers.instances().get().then(
+		function($scope, Journeys, PhantasmRelative) {
+			Journeys.instances().get().then(
 					function(data) {
 						var instances = data.instances;
 						for ( var key in instances) {
 							instances[key]["@id"] = PhantasmRelative
 									.instance(instances[key]["@id"]);
 						}
-						$scope.customers = instances;
+						$scope.journeys = instances;
 					});
 		} ]);
 
-northwindControllers.controller('CustomerDetailControl', [
+stewardControllers.controller('JourneyDetailControl', [
 		'$scope',
 		'$routeParams',
-		'Customers',
-		function($scope, $routeParams, Customers) {
-			Customers.instance($routeParams.instance).get().then(
-					function(customer) {
-						$scope.customer = customer.plain();
+		'Journeys',
+		function($scope, $routeParams, Journeys) {
+			Journeys.instance($routeParams.instance).get().then(
+					function(journey) {
+						$scope.journey = journey.plain();
 					});
 		} ]);
