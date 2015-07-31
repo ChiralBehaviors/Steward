@@ -25,5 +25,6 @@ stewardControllers.controller('JourneyDetailControl', [
 			Journeys.instance($routeParams.instance).get().then(
 					function(journey) {
 						$scope.journey = journey.plain();
+						console.log($scope.journey);
 					});
 		} ]);

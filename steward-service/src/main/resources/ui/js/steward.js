@@ -6,14 +6,14 @@
 	steward.config([ '$routeProvider', function($routeProvider) {
 		$routeProvider.when("/journey/:instance", {
 			templateUrl : 'partials/journey-detail.html',
-			controller : 'JourneyControl'
+			controller : 'JourneyDetailControl'
 		});
-		$routeProvider.when("/journey", {
+		$routeProvider.when("/journeys", {
 			templateUrl : 'partials/journeys.html',
 			controller : 'JourneysControl'
 		});
 		$routeProvider.otherwise({
-			redirectTo : "/journey"
+			redirectTo : "/journeys"
 		});
 	} ]);
 
