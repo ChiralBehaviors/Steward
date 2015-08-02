@@ -30,40 +30,23 @@
 			<img src="Images/tabAngularJS.png" />
 		</div>
 		<div id="divMasterView">
-			<div id="{{customer.customerid}}" class="cssOneCompanyRecord"
-				ng-class="{cssCompanySelectedRecord: Customer.CustomerID == selectedCustomer}"
-				ng-repeat='Customer in listOfCustomers'
-				ng-click="selectCustomer(Customer);">
-				<div class="cssCompanyName">{{Customer.description}}</div>
+			<div id="{{journey.journeyid}}" class="cssOneCompanyRecord"
+				ng-class="{cssCompanySelectedRecord: Journey.JourneyId == selectedJourney}"
+				ng-repeat='Journey in listOfJourneys'
+				ng-click="selectJourney(Journey);">
+				<div class="cssCompanyName">{{Journey.name}}</div>
 				<img src='Images/icnOffice.png'
-					title="This is a tooltip for the company: {{Customer.CompanyName}}"
+					title="This is a tooltip for the company: {{Journey.JourneyName}}"
 					class="cssCustomerIcon" />
 			</div>
 		</div>
 		<div id="divDetailView">
 			<!--  .$select('Order, sum(Quantity) as OrderTotal')-->
-			<div id="Order_{{Order['@id']}}" ng-repeat="Order in listOfOrders"
+			<div id="Step_{{Step['@id']}}" ng-repeat="Step in listOfSteps"
 				class="cssOneOrderRecord">
 				<div class="cssOneOrderHeader">
-					<div class="cssOrderID">Order # {{Order.name}}</div>
-					<div class="cssOrderDate">Order Date: {{Order["Order Date"]}}</div>
-				</div>
-				<div class="cssOneProductRecord"
-					ng-repeat='Item in Order.itemDetails | filter:ProductsInOrder'
-					ng-class-odd="'cssProductOdd'" ng-class-even="'cssProductEven'">
-					<div class="cssOneProductQty">{{Item.quantity}}</div>
-					<div class="cssOneProductName">{{Item.product.name}}</div>
-					<div class="cssOneProductPrice">@ {{Item["unit price"] |
-						currency}}</div>
-					<div class="cssOneProductSubtotal">{{Item["unit price"] *
-						Product.quantity | currency}}</div>
-				</div>
-				<div class="cssOneOrderTotal">
-					<div class="cssOneProductQty">
-						{{Order.itemDetails|countItemsInOrder}} item(s),
-						{{Order.itemDetails.length}} product(s)</div>
-					<div class="cssOneProductSubtotal">
-						{{Order.itemDetails|orderTotal | currency}}</div>
+					<div class="cssOrderID">Step # {{Step.name}}</div>
+					<div class="cssOrderDate">Step Desc: {{Step["Step Description"]}}</div>
 				</div>
 			</div>
 		</div>

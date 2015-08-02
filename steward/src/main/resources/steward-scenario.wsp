@@ -1,0 +1,64 @@
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward/scenario/v1" 
+           "Steward Demo Scenario" 
+           "Demo scenario ontology for ye olde thyme Steward demo"
+imports {
+    "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
+    "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1" as steward
+}
+
+intervals {
+    Architect = "Software Architect" "The journey toward software architecture";
+    AStep1 = "AStep1" "30 minutes of CB";
+    AStep2 = "AStep2" "30 minutes of CB";
+    AStep3 = "AStep3" "30 minutes of CB";
+    AStep4 = "AStep4" "30 minutes of CB";
+    AStep5 = "AStep5" "30 minutes of CB";
+    AStep6 = "AStep6" "30 minutes of CB";
+    AStep7 = "AStep7" "30 minutes of CB";
+    AStep8 = "AStep8" "30 minutes of CB";
+    AStep9 = "AStep9" "30 minutes of CB";
+    
+    ChiralBehaviors = "Chiral Behaviors" "The journey toward Chiral Behaviors";
+    OperatingAgreement = "Operating Agreement" "The operating agreement step";
+    JointCheckingAccount = "Joint Checking Account" "The joint checking account step";
+    Ultrastructure = "Ultrastructure" "Ultrastructure";
+    Steward = "Steward" "Steward";
+    
+    edges {  
+        Architect.kernel::IsA.steward::Journey
+        AStep1.kernel::IsA.steward::Step
+        AStep1.kernel::MemberOf.Architect
+        AStep2.kernel::IsA.steward::Step
+        AStep2.kernel::MemberOf.Architect
+        AStep3.kernel::IsA.steward::Step
+        AStep3.kernel::MemberOf.Architect
+        AStep4.kernel::IsA.steward::Step
+        AStep4.kernel::MemberOf.Architect
+        AStep5.kernel::IsA.steward::Step
+        AStep5.kernel::MemberOf.Architect
+        AStep6.kernel::IsA.steward::Step
+        AStep6.kernel::MemberOf.Architect
+        AStep7.kernel::IsA.steward::Step
+        AStep7.kernel::MemberOf.Architect
+        AStep8.kernel::IsA.steward::Step
+        AStep8.kernel::MemberOf.Architect
+        AStep9.kernel::IsA.steward::Step
+        AStep9.kernel::MemberOf.Architect
+        
+        ChiralBehaviors.kernel::IsA.steward::Journey
+        OperatingAgreement.kernel::IsA.steward::Step
+        OperatingAgreement.kernel::MemberOf.ChiralBehaviors
+        JointCheckingAccount.kernel::IsA.steward::Step
+        JointCheckingAccount.kernel::MemberOf.ChiralBehaviors
+        
+        Ultrastructure.kernel::IsA.steward::Journey
+        Ultrastructure.kernel::IsA.steward::Step
+        Ultrastructure.kernel::MemberOf.ChiralBehaviors
+        
+        Steward.kernel::IsA.steward::Journey
+        Steward.kernel::IsA.steward::Step
+        Steward.kernel::MemberOf.ChiralBehaviors
+        Steward.kernel::MemberOf.Ultrastructure
+    }
+} 
+

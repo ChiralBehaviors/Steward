@@ -14,17 +14,14 @@ intervals {
     Journey = "Journey" "A journey";
     Step = "Step" "A step";
     
-    edges {
-        Journey.kernel::HasMember.Step
-    }
     facets {
-        kernel::IsA.Journey { experience } 
+        kernel::IsA.Journey  
             constraints {
                 n kernel::HasMember: kernel::IsA.Step
             }
-        kernel::IsA.Step { experience } 
+        kernel::IsA.Step  
             constraints {
-                one kernel::MemberOf: kernel::IsA.Journey
+                n kernel::MemberOf: kernel::IsA.Journey
             }
     }
 }

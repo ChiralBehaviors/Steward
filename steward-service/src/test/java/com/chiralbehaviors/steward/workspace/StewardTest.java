@@ -28,7 +28,6 @@ import com.chiralbehaviors.steward.interval.Step;
  */
 public class StewardTest extends AbstractStewardTest {
 
-    
 
     @Test
     public void testJourneys() throws InstantiationException {
