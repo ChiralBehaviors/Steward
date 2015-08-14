@@ -12,17 +12,15 @@ myApp.config([ '$httpProvider', function($httpProvider) {
 
 myApp.service("Journeys", [
 		'WorkspacePhantasm',
-		'PhantasmRelative',
-		function(WorkspacePhantasm, PhantasmRelative) {
+		function(WorkspacePhantasm) {
 			this.instances = function() {
 				return WorkspacePhantasm.facetInstances(stewardUri, "Interval",
 						"kernel|IsA", "Journey");
 			};
 
 			this.instance = function(journey) {
-				var instance = PhantasmRelative.instance(journey);
 				return WorkspacePhantasm.facetInstance(stewardUri, "Interval",
-						"kernel|IsA", "Journey", instance);
+						"kernel|IsA", "Journey", journey);
 			};
 		} ]);
 
@@ -80,13 +78,11 @@ myApp.controller('MasterDetailCtrl', [ '$scope', 'Journeys',
 
 			var selection = [ ";a=Journey Name" ];
 			Journeys.instances().get({
-				//select : selection
+				select : selection
 			}).then(function(data) {
-				console.log(data);
-				$scope.listOfJourneys = data.instances;
+				$scope.listOfJourneys = data['@graph'];
 
 				if ($scope.listOfJourneys.length > 0) {
-					console.log("list of journeys");
 					$scope.selectedJourney = $scope.listOfJourneys[0]["@id"];
 					$scope.loadSteps();
 				}
@@ -99,13 +95,13 @@ myApp.controller('MasterDetailCtrl', [ '$scope', 'Journeys',
 
 			$scope.loadSteps = function() {
 				$scope.listOfSteps = null;
-
-				var selection = [ "steps;a=name" ];
-				Journeys.instance($scope.selectedJourney).get({
-					//select : selection
+				var selection = [ "steps;a=name;a=description" ];
+				var instance = Journeys.instance($scope.selectedJourney);
+				instance.get({
+					select : selection
 				}).then(function(data) {
 					$scope.listOfSteps = data.steps;
-					console.log($scope.listOfSteps);
+					console.log(data.steps);
 				});
 			};
 		} ]);

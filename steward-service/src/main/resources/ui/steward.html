@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Steward</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+
+</head>
+<body>
+<div id="content">
+
+</div>
+<script type="text/jsx">
+
+    var Journey = React.createClass({
+        render: function () {
+            return (
+                    <div className="journey">Journey</div>
+            );
+        }
+    });
+
+    var JourneyList = React.createClass({
+        render: function () {
+            return (
+                    <div className="journeyList">
+                        <h2>Journey List</h2>
+                        <Journey />
+                    </div>
+            )
+        }
+    });
+
+    var Timer = React.createClass({
+        getInitialState: function () {
+            return {
+                lengthInMinutes: 0
+            };
+        },
+        tick: function () {
+            this.setState({secondsRemaining: this.state.secondsRemaining - 1});
+            this.setState({displayMinutes: Math.floor(this.state.secondsRemaining / 60)});
+            this.setState({displaySeconds: this.state.secondsRemaining % 60});
+            if (this.state.secondsRemaining <= 0) {
+                clearInterval(this.interval);
+            }
+        },
+        componentDidMount: function () {
+
+            this.setState({
+                lengthInMinutes: this.props.lengthInMinutes,
+                secondsRemaining: this.props.lengthInMinutes * 60
+            });
+        },
+        componentWillUnmount: function () {
+            clearInterval(this.interval);
+        },
+        render: function () {
+            return (
+                    <div>
+                        <div>{this.state.displayMinutes}:{this.state.displaySeconds}</div>
+                        <input type="button" name="Start" value="Start" onClick={this.start}/>
+                        <input type="button" name="Stop" value="Stop" onClick={this.stop}/>
+                        <input type="button" name="Reset" value="Reset" onClick={this.reset}/>
+                    </div>
+            );
+        },
+        start: function () {
+            this.interval = setInterval(this.tick, 1000);
+        },
+        stop: function () {
+            clearInterval(this.interval);
+        },
+        reset: function () {
+            this.replaceState({secondsRemaining: this.props.lengthInMinutes} * 60);
+            this.replaceState({displayMinutes: Math.floor(this.state.secondsRemaining / 60)});
+            this.replaceState({displaySeconds: this.state.secondsRemaining % 60});
+        }
+    });
+
+
+
+    var Steward = React.createClass({
+        render: function () {
+            return (
+                    <div className="steward">
+                        <h1>Steward goes here</h1>
+                        <Timer lengthInMinutes="25"/>
+                        <JourneyList />
+                    </div>
+            );
+        }
+    });
+
+    React.render(
+            <Steward />,
+            document.getElementById('content')
+    );
+</script>
+</body>
+</html>
