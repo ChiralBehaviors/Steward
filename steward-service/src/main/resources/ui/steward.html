@@ -15,24 +15,6 @@
 </div>
 <script type="text/jsx">
 
-    var Journey = React.createClass({
-        render: function () {
-            return (
-                    <div className="journey">Journey</div>
-            );
-        }
-    });
-
-    var JourneyList = React.createClass({
-        render: function () {
-            return (
-                    <div className="journeyList">
-                        <h2>Journey List</h2>
-                        <Journey />
-                    </div>
-            )
-        }
-    });
 
     var Timer = React.createClass({
         getInitialState: function () {
@@ -75,28 +57,92 @@
             clearInterval(this.interval);
         },
         reset: function () {
-            this.replaceState({secondsRemaining: this.props.lengthInMinutes} * 60);
-            this.replaceState({displayMinutes: Math.floor(this.state.secondsRemaining / 60)});
-            this.replaceState({displaySeconds: this.state.secondsRemaining % 60});
+            this.setState({secondsRemaining: this.props.lengthInMinutes * 60});
+            this.setState({displayMinutes: Math.floor(this.state.secondsRemaining / 60)});
+            this.setState({displaySeconds: this.state.secondsRemaining % 60});
+        }
+    });
+
+    var Journey = React.createClass({
+
+        render: function () {
+            return (
+                    <div className="journey"><h3>{this.props.name}: </h3><h4>{this.props.description}</h4></div>
+            );
+        }
+    });
+
+    var JourneyList = React.createClass({
+
+
+        render: function () {
+            if (!this.props.data) {
+                console.log('null data');
+                return null;
+            }
+
+            console.log(this.props.data);
+            var journeyNodes = this.props.data.map(function(journey) {
+                return (
+                        <Journey name={journey.name} description={journey.description} />
+                );
+            });
+            return (
+                    <div className="journeyList">
+                        {journeyNodes}
+                    </div>
+            )
         }
     });
 
 
 
+    var journeyData = [
+        {name: "Steward Journey",
+        description: "the one that matters"},
+        {name: "weight",
+        description: "manage it"}
+    ];
+
+
     var Steward = React.createClass({
+
+        getInitialState: function() {
+        return {data: journeyData};
+    },
+
+        getJourneys: function() {
+            $.ajax({
+                url: this.props.url,
+                dataType: 'json',
+                cache: false,
+                success: function(data) {
+                    console.log('success');
+                    console.log(data);
+                    this.setState({data: data["@graph"]});
+                }.bind(this),
+                error: function(xhr, status, err) {
+                    console.error(this.props.url, status, err.toString());
+                }.bind(this)
+            });
+        },
+
+        componentDidMount: function() {
+            this.getJourneys();
+        },
         render: function () {
             return (
                     <div className="steward">
                         <h1>Steward goes here</h1>
                         <Timer lengthInMinutes="25"/>
-                        <JourneyList />
+                        <JourneyList data={this.state.data}/>
                     </div>
             );
         }
     });
 
     React.render(
-            <Steward />,
+            <Steward url="/json-ld/facet/Interval/00000000-0000-0005-0000-000000000013/d7ecb12d-3d96-11e5-b85b-23341fff6171/instances"/>,
             document.getElementById('content')
     );
 </script>
