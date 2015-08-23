@@ -64,13 +64,24 @@
     });
 
     var Journey = React.createClass({
+        getInitialState: function() {
+            return { steps: []};
+        },
 
         render: function () {
+            var stepNodes = this.props.steps.map(function(step) {
+                return (<div>{step["@id"]}</div>);
+            });
             return (
-                    <div className="journey"><h3>{this.props.name}: </h3><h4>{this.props.description}</h4></div>
+                    <div className="journey">
+                        <h3>{this.props.name}: {this.props.description}</h3>
+                        {stepNodes}
+                    </div>
             );
         }
     });
+
+    var journeyData = [];
 
     var JourneyList = React.createClass({
 
@@ -84,7 +95,7 @@
             console.log(this.props.data);
             var journeyNodes = this.props.data.map(function(journey) {
                 return (
-                        <Journey name={journey.name} description={journey.description} />
+                        <Journey name={journey.name} description={journey.description} steps={journey.steps}/>
                 );
             });
             return (
@@ -94,15 +105,6 @@
             )
         }
     });
-
-
-
-    var journeyData = [
-        {name: "Steward Journey",
-        description: "the one that matters"},
-        {name: "weight",
-        description: "manage it"}
-    ];
 
 
     var Steward = React.createClass({
