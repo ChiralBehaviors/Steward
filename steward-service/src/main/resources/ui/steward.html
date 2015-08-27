@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+    <link href="css/steward.css" rel="stylesheet" />
 
 </head>
 <body>
@@ -70,12 +71,14 @@
 
         render: function () {
             var stepNodes = this.props.steps.map(function(step) {
-                return (<div>{step["@id"]}</div>);
+                return (<tr><td>{step["@id"]}</td></tr>);
             });
             return (
                     <div className="journey">
                         <h3>{this.props.name}: {this.props.description}</h3>
+                        <table className="step.hidden">
                         {stepNodes}
+                        </table>
                     </div>
             );
         }

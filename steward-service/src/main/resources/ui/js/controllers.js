@@ -3,19 +3,7 @@ var stewardControllers = angular.module('stewardControllers',
 
 stewardControllers.controller('JourneysControl', [
 		'$scope',
-		'Journeys',
-		'PhantasmRelative',
-		function($scope, Journeys, PhantasmRelative) {
-			Journeys.instances().get().then(
-					function(data) {
-						var instances = data.instances;
-						for ( var key in instances) {
-							instances[key]["@id"] = PhantasmRelative
-									.instance(instances[key]["@id"]);
-						}
-						$scope.journeys = instances;
-					});
-		} ]);
+		'Journeys']);
 
 stewardControllers.controller('JourneyDetailControl', [
 		'$scope',

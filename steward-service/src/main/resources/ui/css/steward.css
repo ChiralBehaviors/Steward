@@ -34,3 +34,11 @@ textarea {
 .dark {
   background: #333;
 }
+
+.step.hidden {
+  visibility: collapse;
+}
+
+.step.visible {
+  visibility: visible;
+}

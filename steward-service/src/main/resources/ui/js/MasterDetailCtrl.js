@@ -1,28 +1,7 @@
-﻿var myApp = angular.module('myApp', [ "phantasm" ]);
+﻿var myApp = angular.module('myApp', [ "restangular"]);
 
 var stewardUri = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1";
 
-// Force AngularJS to call our JSON Web Service with a 'GET' rather than an
-// 'OPTION'
-// Taken from: http://better-inter.net/enabling-cors-in-angular-js/
-myApp.config([ '$httpProvider', function($httpProvider) {
-	$httpProvider.defaults.useXDomain = true;
-	delete $httpProvider.defaults.headers.common['X-Requested-With'];
-} ]);
-
-myApp.service("Journeys", [
-		'WorkspacePhantasm',
-		function(WorkspacePhantasm) {
-			this.instances = function() {
-				return WorkspacePhantasm.facetInstances(stewardUri, "Interval",
-						"kernel|IsA", "Journey");
-			};
-
-			this.instance = function(journey) {
-				return WorkspacePhantasm.facetInstance(stewardUri, "Interval",
-						"kernel|IsA", "Journey", journey);
-			};
-		} ]);
 
 myApp.filter('sumByKey', function() {
 	return function(data, key) {
@@ -71,37 +50,43 @@ myApp.filter('stepTotal', function() {
 	};
 });
 
-myApp.controller('MasterDetailCtrl', [ '$scope', 'Journeys',
-		function($scope, Journeys) {
+myApp
+	.controller(
+	'JourneyMasterDetailCtrl',
+	[
+		'$scope',
+		'Restangular',
+		function ($scope, Restangular) {
+			var Steward = Restangular.one('/graphql').one('workspace').all(encodeURIComponent(stewardUri));
+			var stepsQuery = '{ Journey( id: "$id") { steps {id name description} }';
+			var journeysQuery = '{ InstancesOfJourney { name id description } }';
+
 			$scope.listOfJourneys = null;
 			$scope.selectedJourney = null;
 
-			var selection = [ ";a=Journey Name" ];
-			Journeys.instances().get({
-				select : selection
-			}).then(function(data) {
-				$scope.listOfJourneys = data['@graph'];
+			var request = {query: journeysQuery};
+			Steward
+				.post(request)
+				.then(
+				function (data) {
+					$scope.listOfJourneys = data.InstancesOfJourney;
 
-				if ($scope.listOfJourneys.length > 0) {
-					$scope.selectedJourney = $scope.listOfJourneys[0]["@id"];
-					$scope.loadSteps();
-				}
-			});
+					if ($scope.listOfJourneys.length > 0) {
+						$scope.selectedJourney = $scope.listOfJourneys[0].id;
+						$scope.loadSteps();
+					}
+				});
 
-			$scope.selectJourney = function(val) {
-				$scope.selectedJourney = val["@id"];
+			$scope.selectJourney = function (val) {
+				$scope.selectedJourney = val.id;
 				$scope.loadSteps();
 			};
 
-			$scope.loadSteps = function() {
+			$scope.loadSteps = function () {
 				$scope.listOfSteps = null;
-				var selection = [ "steps;a=name;a=description" ];
-				var instance = Journeys.instance($scope.selectedJourney);
-				instance.get({
-					select : selection
-				}).then(function(data) {
-					$scope.listOfSteps = data.steps;
-					console.log(data.steps);
+				var request = {query: stepsQuery.replace('$id', $scope.selectedJourney)};
+				Steward.post(request).then(function (data) {
+					$scope.listOfSteps = data.Journey.steps;
 				});
 			};
-		} ]);
+		}]);
