@@ -7,11 +7,11 @@
 			<img src="Images/tabAngularJS.png" />
 		</div>
 		<div id="divMasterView">
-			<div id="{{journey.journeyid}}" class="cssOneCompanyRecord"
-				ng-class="{cssCompanySelectedRecord: Journey.JourneyId == selectedJourney}"
+			<div id="{{journey.journeyid}}" class="cssOneJourneyRecord"
+				ng-class="{cssJourneySelectedRecord: Journey.JourneyId == selectedJourney}"
 				ng-repeat='Journey in listOfJourneys'
 				ng-click="selectJourney(Journey);">
-				<div class="cssCompanyName">{{Journey.name}}</div>
+				<div class="cssJourneyName">{{Journey.name}}</div>
 				<img src='Images/icnOffice.png'
 					title="This is a tooltip for the company: {{Journey.JourneyName}}"
 					class="cssCustomerIcon" />

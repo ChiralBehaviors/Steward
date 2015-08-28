@@ -44,23 +44,23 @@
     *   For example, the Customer City values will all be added to the DOM with a CSS class of "cssCompanyCity",
     *   which sets their position in the "Customer" <div> to (23px, 40px)
     */
-.cssOneCompanyRecord {
+.cssOneJourneyRecord {
     height: 47px;
     width: 98%;
     position: relative;         /* Very important, for appending child <div>s with absolute positioning later */
     border-bottom: 1px solid white;
 }
-.cssOneCompanyRecord:hover
+.cssOneJourneyRecord:hover
 {
     background-color: yellow;
     cursor: pointer;
 }
-.cssCompanySelectedRecord {
+.cssJourneySelectedRecord {
     /*  If this Company record has been selected, we'll display a Red vertical bar next to it */
     border-left: 2px solid Red;
     background-color: white;
 }
-.cssCompanyName
+.cssJourneyName
 {
     position:absolute;
     top: 5px;
