@@ -26,16 +26,22 @@ import com.chiralbehaviors.CoRE.meta.workspace.dsl.WorkspaceImporter;
  */
 public abstract class AbstractStewardTest extends AbstractModelTest {
 
+    private static boolean initialized = false;
+
     @BeforeClass
     public static void before() throws Exception {
-        em.getTransaction().begin();
-        WorkspaceImporter.createWorkspace(AbstractStewardTest.class.getResourceAsStream("/steward-workspace.wsp"),
-                                          model);
-        em.getTransaction().commit();
-        em.getTransaction().begin();
-        WorkspaceImporter.createWorkspace(AbstractStewardTest.class.getResourceAsStream("/steward-scenario.wsp"),
-                                          model);
-        em.getTransaction().commit();
+
+        if (!initialized) {
+            initialized = true;
+            em.getTransaction().begin();
+            WorkspaceImporter.createWorkspace(AbstractStewardTest.class.getResourceAsStream("/steward-workspace.wsp"),
+                                              model);
+            em.getTransaction().commit();
+            em.getTransaction().begin();
+            WorkspaceImporter.createWorkspace(AbstractStewardTest.class.getResourceAsStream("/steward-scenario.wsp"),
+                                              model);
+            em.getTransaction().commit();
+        }
     }
 
 }
