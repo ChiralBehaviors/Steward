@@ -89,4 +89,8 @@ myApp
 					$scope.listOfSteps = data.Journey.steps;
 				});
 			};
+
+			$scope.createStep = function() {
+				console.log("Step: " + $scope.stepName + ":" + $scope.stepDescription);
+			}
 		}]);

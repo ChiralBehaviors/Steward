@@ -18,7 +18,15 @@
 			</div>
 		</div>
 		<div id="divDetailView">
-			<!--  .$select('Order, sum(Quantity) as OrderTotal')-->
+			<div id="addStep" style="...">
+				<h2>Add a step</h2>
+				<form>
+					<input type="text" name="name" ng-model="stepName"/>
+					<input type="text" name="description" ng-model="stepDescription"/>
+					<input type="button" name="Submit" value="Add a step" ng-click="createStep()"/>
+				</form>
+			</div>
+
 			<div id="Step_{{Step['@id']}}" ng-repeat="Step in listOfSteps"
 				class="cssOneOrderRecord">
 				<div class="cssOneOrderHeader">
@@ -26,6 +34,7 @@
 					<div class="cssOrderDate">Step Desc: {{Step.description}}</div>
 				</div>
 			</div>
+
 		</div>
 	</div>
 
