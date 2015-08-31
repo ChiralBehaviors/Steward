@@ -7,6 +7,14 @@
 			<img src="Images/tabAngularJS.png" />
 		</div>
 		<div id="divMasterView">
+			<div id="addJourney" style="...">
+				<h2>Add a step</h2>
+				<form>
+					<input type="text" name="name" ng-model="journeyName"/>
+					<input type="text" name="description" ng-model="journeyDescription"/>
+					<input type="button" name="Submit" value="Add a journey" ng-click="createJourney()"/>
+				</form>
+			</div>
 			<div id="{{journey.journeyid}}" class="cssOneJourneyRecord"
 				ng-class="{cssJourneySelectedRecord: Journey.JourneyId == selectedJourney}"
 				ng-repeat='Journey in listOfJourneys'

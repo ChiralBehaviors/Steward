@@ -64,18 +64,22 @@ myApp
 			$scope.listOfJourneys = null;
 			$scope.selectedJourney = null;
 
-			var request = {query: journeysQuery};
-			Steward
-				.post(request)
-				.then(
-				function (data) {
-					$scope.listOfJourneys = data.InstancesOfJourney;
+            $scope.loadJourneys = function() {
+                var request = {query: journeysQuery};
+                Steward
+                    .post(request)
+                    .then(
+                    function (data) {
+                        $scope.listOfJourneys = data.InstancesOfJourney;
 
-					if ($scope.listOfJourneys.length > 0) {
-						$scope.selectedJourney = $scope.listOfJourneys[0].id;
-						$scope.loadSteps();
-					}
-				});
+                        if ($scope.listOfJourneys.length > 0) {
+                            $scope.selectedJourney = $scope.listOfJourneys[0].id;
+                            $scope.loadSteps();
+                        }
+                    });
+            };
+
+            $scope.loadJourneys();
 
 			$scope.selectJourney = function (val) {
 				$scope.selectedJourney = val.id;
@@ -105,5 +109,22 @@ myApp
 				Steward.post(request).then(function (data) {
 					$scope.loadSteps();
 				});
-			}
+			};
+
+            $scope.createJourney = function() {
+                var createJourneyQuery = "mutation m ($name: String, $description: String) " +
+                    "{ CreateJourney (state: {setName: $name, setDescription: $description}){ id name description steps {name}}";
+                
+                var params = {
+                    'name': $scope.journeyName,
+                    'description': $scope.journeyDescription
+                };
+                var request = {query: createJourneyQuery, variables: params};
+
+                Steward.post(request).then(function (data) {
+                    $scope.loadJourneys();
+                    $scope.selectedJourney = $scope.listOfJourneys[data.CreateJourney["id"]];
+                    $scope.loadSteps();
+                });
+            }
 		}]);
