@@ -3,26 +3,21 @@ package com.chiralbehaviors.steward.graphql;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-
 import org.junit.Test;
-import org.mockito.AdditionalAnswers;
 
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource;
 import com.chiralbehaviors.CoRE.phantasm.resources.GraphQlResource.QueryRequest;
+import com.chiralbehaviors.CoRE.time.Interval;
+import com.chiralbehaviors.steward.interval.Journey;
 import com.chiralbehaviors.steward.workspace.AbstractStewardTest;
 
 public class GraphQueryTest extends AbstractStewardTest {
@@ -35,7 +30,7 @@ public class GraphQueryTest extends AbstractStewardTest {
           .begin();
         GraphQlResource res = new GraphQlResource(mockedEmf());
         String workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1";
-        Map<String, Object> results = res.query(workspace,
+        Map<String, Object> results = res.query(null, workspace,
                                                 new QueryRequest(journeysQuery,
                                                                  Collections.emptyMap()));
         assertTrue(results.size() > 0);
@@ -51,7 +46,7 @@ public class GraphQueryTest extends AbstractStewardTest {
           .begin();
         GraphQlResource res = new GraphQlResource(mockedEmf());
         String workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1";
-        Map<String, Object> results = res.query(workspace,
+        Map<String, Object> results = res.query(null, workspace,
                                                 new QueryRequest(journeysQuery,
                                                                  Collections.emptyMap()));
         assertNull(results.get("errors"));
@@ -59,7 +54,7 @@ public class GraphQueryTest extends AbstractStewardTest {
         String createdId = (String) ((Map<String, Object>) results.get("CreateJourney")).get("id");
         String journeyInstancesQuery = "{ InstancesOfJourney { name id description steps{name}} }";
 
-        results = res.query(workspace,
+        results = res.query(null, workspace,
                             new QueryRequest(journeyInstancesQuery,
                                              Collections.emptyMap()));
         assertNull(results.get("errors"));
@@ -71,52 +66,95 @@ public class GraphQueryTest extends AbstractStewardTest {
                                                                                     .collect(Collectors.toList())
                                                                                     .size());
 
-        String createStepQuery = "mutation m { CreateStep (state: {setName: \"myFirstStep\", setDescription: \"bar\"}){ name id description } }";
-        results = res.query(workspace,
-                            new QueryRequest(String.format(createStepQuery, createdId),
-                                             Collections.emptyMap()));
-        
+        String createStepQuery = "mutation m ($journey: String) { CreateStep (state: {setName: \"myFirstStep\", setDescription: \"baz\", addJourney: $journey}){ name id description } }";
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("journey", createdId);
+        results = res.query(null, workspace,
+                            new QueryRequest(createStepQuery, params));
+
         assertNull(results.get("errors"));
         assertTrue(results.size() > 0);
         String stepId = (String) ((Map<String, Object>) results.get("CreateStep")).get("id");
-        
-        String addStepToJourney = "mutation m ($id: String, $journey: String) {UpdateStep (state: {id: $id, addJourney: $journey}) {name} }";
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", stepId);
+        assertEquals(stepId, model.getIntervalModel()
+                                  .getChild(model.find(UUID.fromString(createdId),
+                                                       Interval.class),
+                                            model.getKernel()
+                                                 .getHasMember())
+                                  .getId()
+                                  .toString());
+
+        String returnJourneyQuery = "mutation m ($journey: String) { CreateStep (state: {setName: \"mySecondStep\", setDescription: \"baz\", addJourney: $journey}){ journeys {id name description steps {name}} }";
+
         params.put("journey", createdId);
-        results = res.query(workspace,
-                            new QueryRequest(addStepToJourney,
-                                             params));
-        
+        results = res.query(null, workspace,
+                            new QueryRequest(returnJourneyQuery, params));
+
         assertNull(results.get("errors"));
         assertTrue(results.size() > 0);
+        assertEquals(createdId,
+                     ((ArrayList<Map<String, Object>>) ((Map<String, Object>) results.get("CreateStep")).get("journeys")).get(0)
+                                                                                                                         .get("id"));
+        assertEquals(2, model.getIntervalModel()
+                             .getChildren(model.find(UUID.fromString(createdId),
+                                                     Interval.class),
+                                          model.getKernel()
+                                               .getHasMember())
+                             .size());
+
+        //        String addStepToJourney = "mutation m ($id: String, $journey: String) {UpdateStep (state: {id: $id, addJourney: $journey}) {name} }";
+        //        params = new HashMap<>();
+        //        params.put("id", stepId);
+        //        params.put("journey", createdId);
+        //        results = res.query(workspace,
+        //                            new QueryRequest(addStepToJourney, params));
+        //
+        //        assertNull(results.get("errors"));
+        //        assertTrue(results.size() > 0);
 
         String stepInstancesQuery = "{ InstancesOfStep { name id description } }";
 
-        results = res.query(workspace,
+        results = res.query(null, workspace,
                             new QueryRequest(stepInstancesQuery,
                                              Collections.emptyMap()));
         assertNull(results.get("errors"));
         assertTrue(results.size() > 0);
         assertEquals(1,
                      ((List<Map<String, Object>>) results.get("InstancesOfStep")).stream()
-                                                                                    .filter(obj -> obj.get("id")
-                                                                                                      .equals(stepId))
-                                                                                    .collect(Collectors.toList())
-                                                                                    .size());
+                                                                                 .filter(obj -> obj.get("id")
+                                                                                                   .equals(stepId))
+                                                                                 .collect(Collectors.toList())
+                                                                                 .size());
     }
 
-    private EntityManagerFactory mockedEmf() {
-        EntityManagerFactory mockedEmf = mock(EntityManagerFactory.class);
-        EntityManager mockedEm = mock(EntityManager.class,
-                                      AdditionalAnswers.delegatesTo(em));
-        EntityTransaction mockedTxn = mock(EntityTransaction.class);
-        doReturn(mockedTxn).when(mockedEm)
-                           .getTransaction();
-        doNothing().when(mockedEm)
-                   .close();
-        when(mockedEmf.createEntityManager()).thenReturn(mockedEm);
-        return mockedEmf;
+    @Test
+    public void testQuery2() throws InstantiationException {
+        String journeysQuery = "mutation m ($name: String, $description: String, $journey: String) "
+                               + "{ CreateStep (state: {setName: $name, setDescription: $description, addJourney: $journey}){ name }";
+
+        em.getTransaction()
+          .begin();
+
+        Map<String, Object> params = new HashMap<>();
+        UUID journeyId = model.construct(Journey.class, "my journey", "test")
+                              .getRuleform()
+                              .getId();
+        params.put("journey", journeyId.toString());
+        params.put("name", "steppy");
+        params.put("description", "steppity step step step");
+        GraphQlResource res = new GraphQlResource(mockedEmf());
+        String workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1";
+        Map<String, Object> results = res.query(null, workspace,
+                                                new QueryRequest(journeysQuery,
+                                                                 params));
+        assertNull(results.get("errors"));
+        assertTrue(results.size() > 0);
+        assertEquals(1, model.getIntervalModel()
+                             .getChildren(model.find(journeyId,
+                                                     Interval.class),
+                                          model.getKernel()
+                                               .getHasMember())
+                             .size());
     }
 
 }

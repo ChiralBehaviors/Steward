@@ -91,6 +91,19 @@ myApp
 			};
 
 			$scope.createStep = function() {
-				console.log("Step: " + $scope.stepName + ":" + $scope.stepDescription);
+				var createStepQuery = "mutation m ($name: String, $description: String, $journey: String) " +
+                    "{ CreateStep (state: {setName: $name, setDescription: $description, addJourney: $journey}){ name }";
+                //var createStepQuery = "mutation m ($name: String, $description: String) " +
+                //    "{ CreateStep (state: {setName: $name, setDescription: $description}){ id }";
+
+                var params = {'journey': $scope.selectedJourney,
+                    'name': $scope.stepName,
+                    'description': $scope.stepDescription
+                };
+				var request = {query: createStepQuery, variables: params};
+
+				Steward.post(request).then(function (data) {
+					$scope.loadSteps();
+				});
 			}
 		}]);
