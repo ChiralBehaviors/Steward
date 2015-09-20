@@ -114,7 +114,7 @@ myApp
             $scope.createJourney = function() {
                 var createJourneyQuery = "mutation m ($name: String, $description: String) " +
                     "{ CreateJourney (state: {setName: $name, setDescription: $description}){ id name description steps {name}}";
-                
+
                 var params = {
                     'name': $scope.journeyName,
                     'description': $scope.journeyDescription
