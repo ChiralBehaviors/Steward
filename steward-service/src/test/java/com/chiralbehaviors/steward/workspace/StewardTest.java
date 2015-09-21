@@ -31,7 +31,6 @@ public class StewardTest extends AbstractStewardTest {
 
     @Test
     public void testJourneys() throws InstantiationException {
-        em.getTransaction().begin();
         Journey journey = (Journey) model.construct(Journey.class,
                                                     "my journey", "test");
 

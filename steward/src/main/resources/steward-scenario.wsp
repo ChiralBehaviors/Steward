@@ -1,9 +1,10 @@
-workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward/scenario/v1" 
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward/scenario"
+            version: 1 
            "Steward Demo Scenario" 
            "Demo scenario ontology for ye olde thyme Steward demo"
 imports {
     "urn:uuid:00000000-0000-0004-0000-000000000003" as kernel
-    "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1" as steward
+    "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace" as steward
 }
 
 intervals {

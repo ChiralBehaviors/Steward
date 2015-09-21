@@ -1,4 +1,5 @@
-workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1" 
+workspace: "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace"
+            version: 1 
            "Steward"
            "Task Manager"
 

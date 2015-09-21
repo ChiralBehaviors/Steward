@@ -34,11 +34,11 @@ public abstract class AbstractStewardTest extends AbstractModelTest {
         if (!initialized) {
             initialized = true;
             em.getTransaction().begin();
-            WorkspaceImporter.createWorkspace(AbstractStewardTest.class.getResourceAsStream("/steward-workspace.wsp"),
+            WorkspaceImporter.manifest(AbstractStewardTest.class.getResourceAsStream("/steward-workspace.wsp"),
                                               model);
             em.getTransaction().commit();
             em.getTransaction().begin();
-            WorkspaceImporter.createWorkspace(AbstractStewardTest.class.getResourceAsStream("/steward-scenario.wsp"),
+            WorkspaceImporter.manifest(AbstractStewardTest.class.getResourceAsStream("/steward-scenario.wsp"),
                                               model);
             em.getTransaction().commit();
         }

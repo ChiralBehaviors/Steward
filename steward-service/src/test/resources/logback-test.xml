@@ -13,7 +13,7 @@
         <level value="ERROR" />
     </logger>
     <logger name="org.hibernate.sql">
-        <level value="DEBUG" />
+        <level value="ERROR" />
     </logger>
 
     <root>

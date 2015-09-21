@@ -20,20 +20,22 @@ import com.chiralbehaviors.CoRE.time.Interval;
 import com.chiralbehaviors.steward.interval.Journey;
 import com.chiralbehaviors.steward.workspace.AbstractStewardTest;
 
+import graphql.ExecutionResult;
+
 public class GraphQueryTest extends AbstractStewardTest {
+
+    private static final String workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace";
 
     @Test
     public void testQueries() {
         String journeysQuery = "{ InstancesOfJourney { name id description } }";
 
-        em.getTransaction()
-          .begin();
         GraphQlResource res = new GraphQlResource(mockedEmf());
-        String workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1";
-        Map<String, Object> results = res.query(null, workspace,
-                                                new QueryRequest(journeysQuery,
-                                                                 Collections.emptyMap()));
-        assertTrue(results.size() > 0);
+        ExecutionResult result = res.query(null, workspace,
+                                           new QueryRequest(journeysQuery,
+                                                            Collections.emptyMap()));
+        assertTrue(result.getData()
+                         .size() > 0);
 
     }
 
@@ -42,22 +44,24 @@ public class GraphQueryTest extends AbstractStewardTest {
     public void testCreate() {
         String journeysQuery = "mutation m { CreateJourney (state: {setName: \"foo\", setDescription: \"bar\"}){ name id description } }";
 
-        em.getTransaction()
-          .begin();
         GraphQlResource res = new GraphQlResource(mockedEmf());
-        String workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1";
-        Map<String, Object> results = res.query(null, workspace,
-                                                new QueryRequest(journeysQuery,
-                                                                 Collections.emptyMap()));
-        assertNull(results.get("errors"));
+        ExecutionResult result = res.query(null, workspace,
+                                           new QueryRequest(journeysQuery,
+                                                            Collections.emptyMap()));
+
+        Map<String, Object> results = result.getData();
+        assertEquals(0, result.getErrors()
+                              .size());
         assertTrue(results.size() > 0);
         String createdId = (String) ((Map<String, Object>) results.get("CreateJourney")).get("id");
         String journeyInstancesQuery = "{ InstancesOfJourney { name id description steps{name}} }";
 
-        results = res.query(null, workspace,
-                            new QueryRequest(journeyInstancesQuery,
-                                             Collections.emptyMap()));
-        assertNull(results.get("errors"));
+        result = res.query(null, workspace,
+                           new QueryRequest(journeyInstancesQuery,
+                                            Collections.emptyMap()));
+        results = result.getData();
+        assertEquals(0, result.getErrors()
+                              .size());
         assertTrue(results.size() > 0);
         assertEquals(1,
                      ((List<Map<String, Object>>) results.get("InstancesOfJourney")).stream()
@@ -70,10 +74,12 @@ public class GraphQueryTest extends AbstractStewardTest {
 
         Map<String, Object> params = new HashMap<>();
         params.put("journey", createdId);
-        results = res.query(null, workspace,
-                            new QueryRequest(createStepQuery, params));
+        result = res.query(null, workspace,
+                           new QueryRequest(createStepQuery, params));
+        results = result.getData();
 
-        assertNull(results.get("errors"));
+        assertEquals(0, result.getErrors()
+                              .size());
         assertTrue(results.size() > 0);
         String stepId = (String) ((Map<String, Object>) results.get("CreateStep")).get("id");
         assertEquals(stepId, model.getIntervalModel()
@@ -87,10 +93,12 @@ public class GraphQueryTest extends AbstractStewardTest {
         String returnJourneyQuery = "mutation m ($journey: String) { CreateStep (state: {setName: \"mySecondStep\", setDescription: \"baz\", addJourney: $journey}){ journeys {id name description steps {name}} }";
 
         params.put("journey", createdId);
-        results = res.query(null, workspace,
-                            new QueryRequest(returnJourneyQuery, params));
+        result = res.query(null, workspace,
+                           new QueryRequest(returnJourneyQuery, params));
+        results = result.getData();
 
-        assertNull(results.get("errors"));
+        assertEquals(0, result.getErrors()
+                              .size());
         assertTrue(results.size() > 0);
         assertEquals(createdId,
                      ((ArrayList<Map<String, Object>>) ((Map<String, Object>) results.get("CreateStep")).get("journeys")).get(0)
@@ -114,10 +122,12 @@ public class GraphQueryTest extends AbstractStewardTest {
 
         String stepInstancesQuery = "{ InstancesOfStep { name id description } }";
 
-        results = res.query(null, workspace,
-                            new QueryRequest(stepInstancesQuery,
-                                             Collections.emptyMap()));
-        assertNull(results.get("errors"));
+        result = res.query(null, workspace,
+                           new QueryRequest(stepInstancesQuery,
+                                            Collections.emptyMap()));
+        results = result.getData();
+        assertEquals(0, result.getErrors()
+                              .size());
         assertTrue(results.size() > 0);
         assertEquals(1,
                      ((List<Map<String, Object>>) results.get("InstancesOfStep")).stream()
@@ -129,29 +139,30 @@ public class GraphQueryTest extends AbstractStewardTest {
 
     @Test
     public void testQuery2() throws InstantiationException {
-        String journeysQuery = "mutation m ($name: String, $description: String, $journey: String) "
-                               + "{ CreateStep (state: {setName: $name, setDescription: $description, addJourney: $journey}){ name }";
 
-        em.getTransaction()
-          .begin();
+        //        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) "
+        //                + "{ CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
+        //                                                variables);
+        String journeysQuery = "mutation m ($name: String!, $description: String, $journey: String!) "
+                               + "{ CreateStep (state: {setName: $name, setDescription: $description, addJourney: $journey}){ id name }}";
 
         Map<String, Object> params = new HashMap<>();
         UUID journeyId = model.construct(Journey.class, "my journey", "test")
                               .getRuleform()
                               .getId();
+
         params.put("journey", journeyId.toString());
         params.put("name", "steppy");
         params.put("description", "steppity step step step");
         GraphQlResource res = new GraphQlResource(mockedEmf());
-        String workspace = "uri:http://ultrastructure.me/ontology/com.chiralbehaviors/demo/steward-workspace/v1";
-        Map<String, Object> results = res.query(null, workspace,
-                                                new QueryRequest(journeysQuery,
-                                                                 params));
-        assertNull(results.get("errors"));
+        ExecutionResult er = res.query(null, workspace,
+                                       new QueryRequest(journeysQuery, params));
+        Map<String, Object> results = er.getData();
+        assertEquals(0, er.getErrors()
+                          .size());
         assertTrue(results.size() > 0);
         assertEquals(1, model.getIntervalModel()
-                             .getChildren(model.find(journeyId,
-                                                     Interval.class),
+                             .getChildren(model.find(journeyId, Interval.class),
                                           model.getKernel()
                                                .getHasMember())
                              .size());
