@@ -1,7 +1,6 @@
 package com.chiralbehaviors.steward.graphql;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -110,16 +109,6 @@ public class GraphQueryTest extends AbstractStewardTest {
                                                .getHasMember())
                              .size());
 
-        //        String addStepToJourney = "mutation m ($id: String, $journey: String) {UpdateStep (state: {id: $id, addJourney: $journey}) {name} }";
-        //        params = new HashMap<>();
-        //        params.put("id", stepId);
-        //        params.put("journey", createdId);
-        //        results = res.query(workspace,
-        //                            new QueryRequest(addStepToJourney, params));
-        //
-        //        assertNull(results.get("errors"));
-        //        assertTrue(results.size() > 0);
-
         String stepInstancesQuery = "{ InstancesOfStep { name id description } }";
 
         result = res.query(null, workspace,
@@ -140,10 +129,7 @@ public class GraphQueryTest extends AbstractStewardTest {
     @Test
     public void testQuery2() throws InstantiationException {
 
-        //        QueryRequest request = new QueryRequest("mutation m ($name: String!, $description: String, $artifact: String) "
-        //                + "{ CreateThing1(state: { setName: $name, setDescription: $description, setDerivedFrom: $artifact}) { id name } }",
-        //                                                variables);
-        String journeysQuery = "mutation m ($name: String!, $description: String, $journey: String!) "
+         String journeysQuery = "mutation m ($name: String!, $description: String, $journey: String!) "
                                + "{ CreateStep (state: {setName: $name, setDescription: $description, addJourney: $journey}){ id name }}";
 
         Map<String, Object> params = new HashMap<>();

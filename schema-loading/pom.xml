@@ -29,10 +29,11 @@
                                         <dbaUsername>${dba.db.login}</dbaUsername>
                                         <dbaPassword>${dba.db.password}</dbaPassword>
 
-                                        <coreServer>${db.server}</coreServer>
-                                        <corePort>${db.port}</corePort>
-                                        <coreUsername>${db.login}</coreUsername>
-                                        <corePassword>${db.password}</corePassword>
+                                        <coreServer>${steward.db.server}</coreServer>
+                                        <corePort>${steward.db.port}</corePort>
+                                        <coreUsername>${steward.db.login}</coreUsername>
+                                        <corePassword>${steward.db.password}</corePassword>
+                                        <coreDb>${steward.db.database}</coreDb>
 
                                         <dropDatabase>${drop}</dropDatabase>
                                     </loader>
